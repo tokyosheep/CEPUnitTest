@@ -49,7 +49,7 @@ just switch to the Launch main code or Launch unit test1 on VsCode
 
 I developed test environment like Jest(I mentioned again, it'll be just like Jest but I'm not a professtional for coding, and just I need simple test environment)
 
-I use three class below
+I use three classes below
 
 1. Description
 2. Test
