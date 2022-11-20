@@ -1,6 +1,6 @@
 # unit test for Adobe ExtendScript and CEP
 
-[Japanese explanation is here]()
+[Japanese explanation is here](https://kawano-shuji.com/justdiary/2022/11/20/adobe-extendscript-unittest/)
 
 as you know ExtendScript is obsolete script language.
 developing large scale code more complicated than new one.
