@@ -78,6 +78,202 @@ exports.createDocumentReturnWidth = createDocumentReturnWidth;
 
 /***/ }),
 
+/***/ "./src/mainProcess/createLayers.ts":
+/*!*****************************************!*\
+  !*** ./src/mainProcess/createLayers.ts ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, exports) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.createListLayers = void 0;
+var createListLayers = function createListLayers(layerlist) {
+  try {
+    for (var i = 0; i < layerlist.length; i++) {
+      if (layerlist[i] === '') throw new Error('it received empty name');
+      var layer = app.activeDocument.layers.add();
+      layer.name = layerlist[i];
+    }
+    return true;
+  } catch (e) {
+    alert(e);
+    return false;
+  }
+};
+exports.createListLayers = createListLayers;
+
+/***/ }),
+
+/***/ "./unitTest/describe.ts":
+/*!******************************!*\
+  !*** ./unitTest/describe.ts ***!
+  \******************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.Description = void 0;
+var _log = _interopRequireDefault(__webpack_require__(/*! ../log/log */ "./log/log.ts"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+/**
+ * there's no Promise methond on ExtendScript
+ */
+/**
+ * description
+ * grouping test code in this class
+ */
+var Description = /*#__PURE__*/function () {
+  /**
+   * set function it's called before test
+   * @param func @type {Function} 
+   */
+  Description.eachBefore = function eachBefore(func) {
+    this._doBefore = true;
+    this._beforeFunc = func;
+  }
+  /**
+   * set function it's called after test
+   * @param func @type {Function} 
+   */;
+  Description.eachAfter = function eachAfter(func) {
+    this._doAfter = true;
+    this._afterFunc = func;
+  }
+
+  /**
+   * reset test status
+   */;
+  Description.resetEachFunc = function resetEachFunc() {
+    this._doAfter = false;
+    this._doBefore = false;
+  };
+  function Description(description, func) {
+    _log["default"].log(['description', description]);
+    this.func = func;
+  }
+
+  /**
+   * skip the description
+   * @returns @type {this}
+   */
+  var _proto = Description.prototype;
+  _proto.skip = function skip() {
+    this.isSkip = true;
+    _log["default"].log('skiped');
+    return this;
+  }
+
+  /**
+   * call the tests
+   * @returns @type {void}
+   */;
+  _proto.describe = function describe() {
+    if (this.isSkip) return;
+    if (Description._doBefore) Description._beforeFunc();
+    this.func();
+    if (Description._doAfter) Description._afterFunc();
+  };
+  return Description;
+}();
+exports.Description = Description;
+Description._beforeFunc = null;
+Description._doBefore = false;
+Description._doAfter = false;
+Description._afterFunc = null;
+;
+
+/***/ }),
+
+/***/ "./unitTest/test1.ts":
+/*!***************************!*\
+  !*** ./unitTest/test1.ts ***!
+  \***************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.test1 = void 0;
+var _unitTest = __webpack_require__(/*! ./unitTest */ "./unitTest/unitTest.ts");
+var _createDocument = __webpack_require__(/*! ../src/mainProcess/createDocument */ "./src/mainProcess/createDocument.ts");
+var _log = _interopRequireDefault(__webpack_require__(/*! ../log/log */ "./log/log.ts"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var test1 = function test1() {
+  _unitTest.Result.eachBefore(function () {
+    _log["default"].log('before do');
+  });
+  _unitTest.Result.eachAfter(function () {
+    _log["default"].log('after you did');
+    app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
+  });
+  new _unitTest.Test('try to test', function () {
+    new _unitTest.Result().expect((0, _createDocument.createDocumentReturnWidth)(400, 900)).toBe(400);
+  }).testing();
+  new _unitTest.Test('try to test', function () {
+    new _unitTest.Result().expect((0, _createDocument.createDocumentReturnWidth)(900, 1200)).toBe(900);
+  }).testing();
+};
+exports.test1 = test1;
+
+/***/ }),
+
+/***/ "./unitTest/test2.ts":
+/*!***************************!*\
+  !*** ./unitTest/test2.ts ***!
+  \***************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.test2 = void 0;
+var _unitTest = __webpack_require__(/*! ./unitTest */ "./unitTest/unitTest.ts");
+var _describe = __webpack_require__(/*! ./describe */ "./unitTest/describe.ts");
+var _createLayers = __webpack_require__(/*! ../src/mainProcess/createLayers */ "./src/mainProcess/createLayers.ts");
+var _createDocument = __webpack_require__(/*! ../src/mainProcess/createDocument */ "./src/mainProcess/createDocument.ts");
+var test2 = function test2() {
+  /*
+      set function 
+      createing document before the test
+  */
+  _describe.Description.eachBefore(function () {
+    (0, _createDocument.createDocumentReturnWidth)(300, 300);
+  });
+  new _describe.Description('descript creating layers', function () {
+    new _unitTest.Test('create my list', function () {
+      var layerlist = ['apple', 'orange', 'lemon'];
+      new _unitTest.Result().expect((0, _createLayers.createListLayers)(layerlist)).tobeTruthy();
+    }).testing();
+    new _unitTest.Test('hello', function () {
+      alert('hello');
+    }).testing();
+
+    /*
+    set args that contains value of array
+    and function recieves values
+    */
+    new _unitTest.Test('create each layers', function (arg) {
+      (0, _createDocument.createDocumentReturnWidth)(300, 300);
+      new _unitTest.Result().expect((0, _createLayers.createListLayers)(arg)).tobeTruthy();
+    }).setEach([['i', 'my', 'me'], ['jun', 'mai', 'mei']]).testing();
+  }).skip().describe();
+  new _describe.Description('description how can error be happned', function () {
+    new _unitTest.Test('empty list', function () {
+      var layerlist = ['apple', '', 'banana'];
+      new _unitTest.Result().expect((0, _createLayers.createListLayers)(layerlist)).tobeFalsy();
+    }).testing();
+  }).describe();
+};
+exports.test2 = test2;
+
+/***/ }),
+
 /***/ "./unitTest/unitTest.ts":
 /*!******************************!*\
   !*** ./unitTest/unitTest.ts ***!
@@ -88,7 +284,7 @@ exports.createDocumentReturnWidth = createDocumentReturnWidth;
 
 
 exports.__esModule = true;
-exports.test = exports.Result = void 0;
+exports.Test = exports.Result = void 0;
 var _log = _interopRequireDefault(__webpack_require__(/*! ../log/log */ "./log/log.ts"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _objectEntries(obj) {
@@ -97,9 +293,17 @@ function _objectEntries(obj) {
   for (var k = 0; k < keys.length; k++) entries.push([keys[k], obj[keys[k]]]);
   return entries;
 }
+/*
+is the value Object or not
+*/
 var isObject = function isObject(value) {
   return value !== null && typeof value === 'object';
 };
+
+/*
+comparing all of property of object
+whether is equal or not
+*/
 var isEqualObject = function isEqualObject(anyObject, comparableObject) {
   return _objectEntries(anyObject).every(function (_ref) {
     var key = _ref[0],
@@ -110,25 +314,97 @@ var isEqualObject = function isEqualObject(anyObject, comparableObject) {
     return value === comparableObject[key];
   });
 };
-var test = function test(declation, func, isSkip) {
-  if (isSkip === void 0) {
-    isSkip = false;
+
+/**
+ *  Test class
+ *  each method can recieve argments
+ *  and circulating all of args 
+ */
+var Test = /*#__PURE__*/function () {
+  function Test(description, func) {
+    this.isSkip = false;
+    this.isEach = false;
+    this.func = func;
+    _log["default"].log('test');
+    _log["default"].log(description);
   }
+
+  /**
+   * skip the test
+   * @returns @type {this}
+   */
+  var _proto = Test.prototype;
+  _proto.skip = function skip() {
+    this.isSkip = true;
+    return this;
+  }
+
+  /**
+   * doing actual test
+   * @returns @type {this}
+   */;
+  _proto.testing = function testing() {
+    var _this = this;
+    if (this.isSkip) return;
+    if (this.isEach) {
+      this.eachArg.forEach(function (arg, index) {
+        _log["default"].log("testing number of " + index);
+        _this.func(arg);
+      });
+    } else {
+      this.func();
+    }
+  }
+
+  /**
+   * 
+   * @param arg @type {unknown[]} 
+   * @returns @type {this}
+   */;
+  _proto.setEach = function setEach(arg) {
+    this.eachArg = arg;
+    this.isEach = true;
+    return this;
+  };
+  return Test;
+}();
+/*
+I think I don't need it any more
+export const test = <T extends Function>(declation:string, func:T, isSkip:boolean = false) => {
   if (isSkip) return;
-  _log["default"].log('test');
-  _log["default"].log(declation);
+  report.log('test');
+  report.log(declation);
   func();
 };
-exports.test = test;
+*/
+/**
+ * Result class
+ * validate the result that was you expected or not
+ */
+exports.Test = Test;
 var Result = /*#__PURE__*/function () {
+  /**
+   * something call function before test
+   * @param func @type {Function} 
+   */
   Result.eachBefore = function eachBefore(func) {
     this._doBefore = true;
     this._beforeFunc = func;
-  };
+  }
+
+  /**
+   * something call function after test
+   * @param func @type {Function} 
+   */;
   Result.eachAfter = function eachAfter(func) {
     this._doAfter = true;
     this._afterFunc = func;
-  };
+  }
+
+  /**
+   * reset the function status
+   * it stopps call function both after and before
+   */;
   Result.resetEachFunc = function resetEachFunc() {
     this._doAfter = false;
     this._doBefore = false;
@@ -138,33 +414,67 @@ var Result = /*#__PURE__*/function () {
     _log["default"].log(Result._doBefore);
     if (Result._doBefore) Result._beforeFunc();
   }
-  var _proto = Result.prototype;
-  _proto.expect = function expect(n) {
+
+  /**
+   * 
+   * @param {unknown} n 
+   * @returns @type {this} the class itsels
+   */
+  var _proto2 = Result.prototype;
+  _proto2.expect = function expect(n) {
     this.value = n;
     if (Result._doAfter) Result._afterFunc();
     return this;
-  };
-  _proto.showResult = function showResult() {
+  }
+
+  /**
+   * just showing result without validating result value
+   */;
+  _proto2.showResult = function showResult() {
     _log["default"].log(this.value);
-  };
-  _proto.callResult = function callResult(resultOfBooelan, initValue, expectation) {
+  }
+
+  /**
+   * 
+   * @param resultOfBooelan @type {boolean} result it was success or not
+   * @param initValue @type {unknown} result of actual value
+   * @param expectation @type {unknown} the value you expected
+   */;
+  _proto2.callResult = function callResult(resultOfBooelan, initValue, expectation) {
     if (resultOfBooelan) {
       _log["default"].log('---- test was succeeded ----');
     } else {
       _log["default"].log('---- failed the test. the value was unexpected ----');
       if (initValue !== undefined && expectation !== undefined) _log["default"].log("it was expected " + expectation + " but value was " + initValue);
     }
-  };
-  _proto.tobeTruthy = function tobeTruthy() {
+  }
+
+  /**
+   * is it truthy or not
+   */;
+  _proto2.tobeTruthy = function tobeTruthy() {
     this.callResult(!!this.value === true);
-  };
-  _proto.tobeFalsy = function tobeFalsy() {
-    this.callResult(!this.value === false);
-  };
-  _proto.toBe = function toBe(n) {
+  }
+  /**
+   * is it falsy or not
+   */;
+  _proto2.tobeFalsy = function tobeFalsy() {
+    this.callResult(!!this.value === false);
+  }
+  /**
+   * was the value you expected exactly or not
+   * @param n @type {unknown} 
+   */;
+  _proto2.toBe = function toBe(n) {
     this.callResult(this.value === n, this.value, n);
-  };
-  _proto.toEqual = function toEqual(comparableObject) {
+  }
+  /**
+   * comparing objects
+   * not refering.
+   * it inspects the Objects have same properties or not
+   * @param comparableObject @type {Object}
+   */;
+  _proto2.toEqual = function toEqual(comparableObject) {
     this.callResult(isEqualObject(this.value, comparableObject));
   };
   return Result;
@@ -2206,36 +2516,31 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 !function() {
 "use strict";
-/*!***************************!*\
-  !*** ./unitTest/test1.ts ***!
-  \***************************/
+/*!******************************!*\
+  !*** ./unitTest/mainTest.ts ***!
+  \******************************/
 
 
 __webpack_require__(/*! extendscript-es5-shim */ "./node_modules/extendscript-es5-shim/index.js");
 __webpack_require__(/*! ../polyfills/json2 */ "./polyfills/json2.js");
 __webpack_require__(/*! ../polyfills/padStart */ "./polyfills/padStart.js");
 __webpack_require__(/*! ../polyfills/trunc */ "./polyfills/trunc.js");
-var _unitTest = __webpack_require__(/*! ./unitTest */ "./unitTest/unitTest.ts");
-var _createDocument = __webpack_require__(/*! ../src/mainProcess/createDocument */ "./src/mainProcess/createDocument.ts");
-var _log = _interopRequireDefault(__webpack_require__(/*! ../log/log */ "./log/log.ts"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _test = __webpack_require__(/*! ./test1 */ "./unitTest/test1.ts");
+var _test2 = __webpack_require__(/*! ./test2 */ "./unitTest/test2.ts");
 // padstart polyfill
 // Math.trunc
 
-_unitTest.Result.eachBefore(function () {
-  _log["default"].log('before do');
-});
-_unitTest.Result.eachAfter(function () {
-  _log["default"].log('after you did');
-  app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
-});
-(0, _unitTest.test)('try to test', function () {
-  new _unitTest.Result().expect((0, _createDocument.createDocumentReturnWidth)(400, 900)).toBe(400);
-});
-(0, _unitTest.test)('try to test', function () {
-  new _unitTest.Result().expect((0, _createDocument.createDocumentReturnWidth)(900, 1200)).toBe(900);
+var tests = [{
+  func: _test.test1,
+  testSwitch: true
+}, {
+  func: _test2.test2,
+  testSwitch: false
+}];
+tests.forEach(function (t) {
+  if (t.testSwitch) t.func();
 });
 }();
 /******/ })()
 ;
-//# sourceMappingURL=test1.bundle.js.map
+//# sourceMappingURL=test.bundle.js.map

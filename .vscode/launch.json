@@ -13,20 +13,20 @@
             "type": "extendscript-debug",
             "request": "launch",
             "bringToFront": true,
-            "name": "Launch unit test1",
+            "name": "Launch main code",
             "hostAppSpecifier": "illustrator",
             "debugLevel": 1,
-            "script": "${workspaceFolder}/dist/test1.bundle.js",
+            "script": "${workspaceFolder}/dist/main.bundle.js",
             "engineName": "main"
         },
         {
             "type": "extendscript-debug",
             "request": "launch",
             "bringToFront": true,
-            "name": "Launch unit test2",
+            "name": "Launch unit test1",
             "hostAppSpecifier": "illustrator",
             "debugLevel": 1,
-            "script": "${workspaceFolder}/dist/test2.bundle.js",
+            "script": "${workspaceFolder}/dist/test.bundle.js",
             "engineName": "main"
         }
     ]

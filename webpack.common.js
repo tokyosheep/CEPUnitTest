@@ -3,8 +3,7 @@ const path = require('path');
 module.exports = {
   entry: {
     main: './src/main.ts',
-    test1: './unitTest/test1.ts',
-    test2: './unitTest/test2.ts'
+    test: './unitTest/mainTest.ts'
   },
   output: {
     filename: '[name].bundle.js',

@@ -5,4 +5,4 @@ export const createDocumentReturnWidth = (width, height) => {
     height
     );
   return doc.width;
-}
+};

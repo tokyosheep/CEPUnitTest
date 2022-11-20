@@ -1,12 +1,9 @@
-import 'extendscript-es5-shim';
-import '../polyfills/json2';
-import '../polyfills/padStart';// padstart polyfill
-import '../polyfills/trunc';// Math.trunc
-
-import { test, Result } from './unitTest';
+import { Result, Test } from './unitTest';
 
 import { createDocumentReturnWidth } from '../src/mainProcess/createDocument';
 import report from '../log/log';
+
+export const test1 = () => {
 
 Result.eachBefore(() => {
     report.log('before do');
@@ -17,10 +14,12 @@ Result.eachAfter(() => {
     app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
 });
 
-test('try to test', () => {
+new Test('try to test', () => {
     new Result().expect(createDocumentReturnWidth(400,900)).toBe(400);
-});
+}).testing();
 
-test('try to test', () => {
+new Test('try to test', () => {
     new Result().expect(createDocumentReturnWidth(900,1200)).toBe(900);
-});
+}).testing();
+
+}

@@ -2043,6 +2043,10 @@ __webpack_require__(/*! ../polyfills/trunc */ "./polyfills/trunc.js");
 var calc = function calc(n) {
   return n * 4;
 };
+var showAlert = function showAlert(n) {
+  alert(calc(n).toString());
+};
+showAlert(100);
 }();
 /******/ })()
 ;
