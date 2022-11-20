@@ -47,13 +47,13 @@ just switch to the Launch main code or Launch unit test1 on VsCode
 
 ## How to develop it
 
-I developed test environment like Jest(I mentioned again, it'll be like Jest but I'm not a professtional for coding, and just I need simple test environment)
+I developed test environment like Jest(I mentioned again, it'll be just like Jest but I'm not a professtional for coding, and just I need simple test environment)
 
 I use three class below
 
-1.Description
-2.Test
-3.Result(expect)
+1. Description
+2. Test
+3. Result(expect)
 
 you can expect how do these classes play thier role.
 like Description plays its role like this.
